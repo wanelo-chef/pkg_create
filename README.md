@@ -11,4 +11,4 @@ Tested only on SmartOS.
 
 License and Authors
 -------------------
-Author: Blake Irvin (<bixu@wanelo.com>)
+Author: Blake Irvin (<blake.irvin@gmail.com>)
