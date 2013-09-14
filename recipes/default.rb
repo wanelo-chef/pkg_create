@@ -20,10 +20,6 @@ directory "#{node['pkg_create']['packages_dir']}" do
   action :create
 end
 
-bash "rebuild package definitions" do
-  user "root"
-  code <<-EOH
-  for pkg in $(ls *.tgz #{node['pkg_create']['packages_dir']}); do \
-  pkg_info -X $pkg; done | gzip -9 > #{node['pkg_create']['packages_dir']}/pkg_summary.gz
-  EOH
+execute "rebuild package definitions" do
+  command "for pkg in $(ls #{node['pkg_create']['packages_dir']}/*.tgz); do pkg_info -X $pkg; done | gzip -9 > #{node['pkg_create']['packages_dir']}/pkg_summary.gz"
 end
