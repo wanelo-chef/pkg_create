@@ -22,7 +22,7 @@
 source_dir = "/opt/rbenv/versions/1.9.3-p392"
 build_dir = "/var/chef/cache/rbenv-ruby-1.9.3-p392"
 
-directory "#{build_dir}" do
+directory build_dir do
   mode 0755
 end
 
@@ -51,7 +51,7 @@ directory "#{node['pkg_create']['packages_dir']}" do
 end
 
 execute "build package" do
-  command "pkg_create -B #{build_dir}/build-info -c #{build_dir}/comment -d #{build_dir}/description -f #{build_dir}/packlist -I #{source_dir} -p #{source_dir} -U #{node['pkg_create']['packages_dir']}/rbenv-ruby-1.9.3-p392.tgz"
+  command "pkg_create -B #{build_dir}/build-info -c #{build_dir}/comment -d #{build_dir}/description -f #{build_dir}/packlist -I #{source_dir} -p #{source_dir} -U #{node['pkg_create']['packages_dir']}/rbenv-ruby-1.9.3p392.tgz"
   only_if "ls #{source_dir}"
 end
 
