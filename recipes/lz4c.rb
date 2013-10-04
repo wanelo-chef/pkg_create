@@ -19,10 +19,14 @@
 
 include_recipe "paths"
 
+package "subversion" do
+  action :install
+end
+
 install_dir = node['paths']['bin_dir']
 build_dir = "#{Chef::Config[:file_cache_path]}/lz4c"
 package_dir = "#{Chef::Config[:file_cache_path]}/lz4c-package"
-
+lz4c_revision = "105"
 # Generate package information for lz4c
 directory package_dir do
   mode 0755
@@ -45,17 +49,18 @@ template "#{package_dir}/description" do
 end
 
 # Build lz4c
-git build_dir do
-  repository "https://github.com/juntalis/lz4-mirror.git"
-  reference "master"
+subversion "lz4c source code" do
+  repository "http://lz4.googlecode.com/svn/trunk/"
+  revision lz4c_revision
+  destination build_dir
   action :sync
-  notifies :run, "execute[build lz4c]"
+  notifies :run, "execute[build lz4c]", :immediately
 end
 
 execute "build lz4c" do
   command "cd #{build_dir} && make EXT=''"
   action :nothing
-  notifies :run, "execute[build lz4c package]"
+  notifies :run, "execute[build lz4c package]", :immediately
 end
 
 # Create package
@@ -63,7 +68,7 @@ execute "build lz4c package" do
   command "pkg_create -B #{package_dir}/build-info -c #{package_dir}/comment " +
           "-d #{package_dir}/description -f #{package_dir}/packlist "+
           "-I #{install_dir} -p #{build_dir} " +
-          "-U #{node['pkg_create']['packages_dir']}/lz4c-104.tgz"
+          "-U #{node['pkg_create']['packages_dir']}/lz4c-#{lz4c_revision}.tgz"
   only_if "ls #{build_dir}/lz4c"
   action :nothing
 end
